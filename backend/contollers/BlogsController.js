@@ -7,6 +7,22 @@ const getAllBlogs = async(req, res) => {
     res.status(200).json(allBlogs)
 }
 
+const getBlogsByUserId = async(req, res) => {
+  const {uid} = req.params;
+  try{
+    const user = await User.findById(uid).populate('blogs');
+    if(!user) {
+      return res.status(404).json({message : "Unable to find the User"});
+    }
+    const blogs = user.blogs;
+    
+    return res.status(200).json(blogs);
+    
+  }
+  catch(err) {
+    res.status(500).json({message : err.message});
+  }
+}
 const getBlogById = async(req, res) => {
   const {bid} = req.params;
   try{
@@ -22,7 +38,7 @@ const getBlogById = async(req, res) => {
 }
 
 const createBlog = async (req, res) => {
-  const { title, content, creator } = req.body;
+  const { title, content, creator, author, date } = req.body;
 
   try {
     const user = await User.findById(creator);
@@ -30,7 +46,7 @@ const createBlog = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const newBlog = new Blog({ title, content, creator });
+    const newBlog = new Blog({ title, content, creator , author, date});
     await newBlog.save();
 
     user.blogs.push(newBlog);
@@ -48,20 +64,21 @@ const updateBlog = async(req, res) => {
 
   const {bid} = req.params;
   const data = await Blog.findById(bid);
-  if(creator !== data.creator) {
+  console.log(data);
+  if(creator != data.creator) {
     return res.status(401).json({message : "Unauthorized"});
   }
   const blog = {
     title,
-    blog
+    content
   }
   try{
 
     const updatedBlog = await Blog.findByIdAndUpdate(bid, blog, {new : true});
-    if(!updateBlog) {
+    if(!updatedBlog) {
       return res.status(402).json({message : "no blog found"});
     }
-    res.status(200).json(updateBlog);
+    res.status(200).json(updatedBlog);
   }
   catch(err) {
     res.status(500).json({message : " Unable to update"});
@@ -96,5 +113,6 @@ const deleteBlog = async (req, res) => {
     deleteBlog,
     createBlog,
     updateBlog,
-    getBlogById
+    getBlogById,
+    getBlogsByUserId
   }

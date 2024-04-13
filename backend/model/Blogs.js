@@ -10,6 +10,8 @@ const BlogSchema = new mongoose.Schema({
     content : {type : String, required : true},
     image : {type : String},
     creator : {type : mongoose.Types.ObjectId, required : true, ref : 'User'},
+    author : {type : String},
+    date : {type : String}
 
 }, {timestamps : true})
 

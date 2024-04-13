@@ -25,7 +25,8 @@ const getUserById = async(req, res) => {
 }
 const login = async (req, res) => {
   const { email, password } = req.body;
-
+  if(!email) return res.status(409).json({message : "Email is required."});
+  if(!password) return res.status(409).json({message : "Password is required"});
   try {
     const existingUser = await User.findOne({ email });
     if (!existingUser) {
@@ -34,7 +35,7 @@ const login = async (req, res) => {
         .json({ message: "No existing user found. Try Signing up instead" });
     }
     if (password === existingUser.password) {
-      return res.status(200).json({ message: "Logged in successfully" });
+      return res.status(200).json(existingUser);
     } else {
       return res.status(401).json({ message: "Incorrect password" });
     }
@@ -46,6 +47,13 @@ const login = async (req, res) => {
 
 const signup = async (req, res) => {
   const { name, email, password } = req.body;
+  if(!name || !email || !password) {
+    return res.status(409).json({message : "Please fill all the details."});
+  }
+  if(!email.includes("@")) return res.status(409).json({message : "Please enter a valid email"});
+
+  if(password.length < 6) return res.status(409).json({message : "Password must contain atleast 6 letters."})
+
 
   try {
     let existingUser = await User.findOne({ email });
@@ -54,7 +62,7 @@ const signup = async (req, res) => {
         .status(409)
         .json({ message: "User already exists. Please try login instead" });
     }
-
+    
     const newUser = new User({ name, email, password });
     await newUser.save();
 
