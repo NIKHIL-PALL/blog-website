@@ -9,9 +9,10 @@ function MyBlogs() {
   const [error, setError] = useState("");
   const [blogs, setBlogs] = useState([]);
   const auth = useContext(AuthContext);
+  console.log(auth.isLoggedIn);
   const handleOnDelete = (blogId) => {
-    setBlogs(prevBlogs => prevBlogs.filter(blog => blog._id !== blogId));
-  }
+    setBlogs((prevBlogs) => prevBlogs.filter((blog) => blog._id !== blogId));
+  };
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
@@ -69,14 +70,14 @@ function MyBlogs() {
           </div>
         )}
 
-        {blogs.map((blog) => (
+        {auth.isLoggedIn && blogs.map((blog) => (
           <BlogCard
             key={blog._id}
             title={blog.title}
             content={blog.content}
             date={blog.date}
             author={blog.author}
-            image={logo}
+            image={`http://localhost:5000/images/${blog.image}`}
             creator={blog.creator}
             blogId={blog._id}
             onDelete={handleOnDelete}

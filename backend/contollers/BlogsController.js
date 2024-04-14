@@ -38,6 +38,8 @@ const getBlogById = async(req, res) => {
 }
 
 const createBlog = async (req, res) => {
+
+  const image = req.file.filename;
   const { title, content, creator, author, date } = req.body;
 
   try {
@@ -46,7 +48,7 @@ const createBlog = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const newBlog = new Blog({ title, content, creator , author, date});
+    const newBlog = new Blog({ title, content, creator , author, date, image});
     await newBlog.save();
 
     user.blogs.push(newBlog);

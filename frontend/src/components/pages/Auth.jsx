@@ -32,7 +32,7 @@ const Auth = () => {
               setError(result.message);
               return;
             }
-            auth.login(result._id);
+            auth.login(result._id, result.name);
             navigate("/")
         }
         catch(err) {
@@ -58,7 +58,7 @@ const Auth = () => {
               setError(result.message);
               return;
             }
-            auth.login(result._id);
+            auth.login(result._id, result.name);
             navigate("/");
         }
         catch(err) {

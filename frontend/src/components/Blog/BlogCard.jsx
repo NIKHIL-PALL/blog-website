@@ -1,32 +1,46 @@
 import React, { useContext, useState } from "react";
 import AuthContext from "../../Contexts/AuthContext";
 import { Link } from "react-router-dom";
-import {useNavigate} from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 
 import ConfirmationModal from "../../Utils/ConfirmationModal";
-const BlogCard = ({ title, author, date, image, content, creator, blogId, onDelete }) => {
+const BlogCard = ({
+  title,
+  author,
+  date,
+  image,
+  content,
+  creator,
+  blogId,
+  onDelete,
+}) => {
   const auth = useContext(AuthContext);
   const [modal, setModal] = useState(false);
   const navigate = useNavigate();
-  const handleDelete = async() => {
-    try{
-
+  const handleDelete = async () => {
+    try {
       const response = await fetch(`http://localhost:5000/api/blog/${blogId}`, {
-        method : "DELETE",
-      })
+        method: "DELETE",
+      });
       onDelete(blogId);
-      setModal(false)
+      setModal(false);
       // navigate("/myblogs")
-    }
-    catch(err) {
+    } catch (err) {
       console.log(err);
     }
-    
-  }
+  };
   // console.log(blogId)
   return (
     <div className="max-w-xs rounded overflow-hidden shadow-lg">
-      {modal && <ConfirmationModal isOpen title={"Do you want to delete?"} message={"You cannot restore deleted blogs."} onConfirm={handleDelete} onCancel={() => setModal(false)}/>}
+      {modal && (
+        <ConfirmationModal
+          isOpen
+          title={"Do you want to delete?"}
+          message={"You cannot restore deleted blogs."}
+          onConfirm={handleDelete}
+          onCancel={() => setModal(false)}
+        />
+      )}
       <img className="w-full" src={image} alt={title} />
       <div className="px-6 py-4">
         <div className="font-bold text-xl mb-2">{title}</div>
@@ -47,10 +61,16 @@ const BlogCard = ({ title, author, date, image, content, creator, blogId, onDele
       </div>
       {auth.userId === creator && (
         <div>
-          <Link to={`/edit/${blogId}`} className="bg-green-500  hover:bg-green-700 text-white font-bold py-2 px-4 m-2 rounded focus:outline-none focus:shadow-outline">
+          <Link
+            to={`/edit/${blogId}`}
+            className="bg-green-500  hover:bg-green-700 text-white font-bold py-2 px-4 m-2 rounded focus:outline-none focus:shadow-outline"
+          >
             Edit
           </Link>
-          <button onClick={() => setModal(true)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 m-2 rounded focus:outline-none focus:shadow-outline">
+          <button
+            onClick={() => setModal(true)}
+            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 m-2 rounded focus:outline-none focus:shadow-outline"
+          >
             Delete
           </button>{" "}
         </div>

@@ -18,21 +18,24 @@ import EditBlog from "./components/pages/EditBlog";
 function App() {
   const [isLoggedIn , setIsLoggedIn] = useState(false);
   const [userId, setUserId ] = useState(null);
-  const login = (userId) => {
+  const [name, setName] = useState("");
+  const login = (userId, name) => {
     setIsLoggedIn(true);
     setUserId(userId);
+    setName(name);
   }
 
   const logout = () => {
     setIsLoggedIn(false);
     setUserId(null);
+    setName("")
   }
   
   return (
     <React.Fragment>
       <BrowserRouter>
+        <AuthContext.Provider value={{isLoggedIn : isLoggedIn,login : login, logout : logout , userId : userId, name : name}}>
         <Navbar />
-        <AuthContext.Provider value={{isLoggedIn : isLoggedIn,login : login, logout : logout , userId : userId}}>
         <Routes>
           <Route path='/' exact Component={Home}/>
           <Route path="/blog" exact Component={Auth}/>
